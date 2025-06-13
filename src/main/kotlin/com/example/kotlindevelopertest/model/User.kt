@@ -9,22 +9,13 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
- class User {
-
+class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-
+    val id: Long? = null,
     @Column(nullable = false, unique = true)
-    lateinit var email: String
-
+     val email: String,
     @Column(nullable = false)
-    lateinit var name: String
-
-    constructor()
-
-    constructor(email: String, name: String) {
-        this.email = email
-        this.name = name
-    }
-}
+     val name: String,
+    @Column(nullable = false)
+     val password: String)

@@ -7,7 +7,9 @@ import com.example.kotlindevelopertest.service.interfaces.IUserService
 import jakarta.validation.Valid
 import org.apache.coyote.BadRequestException
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,19 +19,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val userService: IUserService) {
+class UserController(private val userService: IUserService, val passwordEncoder: PasswordEncoder) {
 
     @PostMapping
     fun createUser(@RequestBody @Valid userRequest: UserRequest): ResponseEntity<Any> {
-        try {
-            val savedUser = userService.create(userRequest.name, userRequest.email)
-            return ResponseEntity.ok(savedUser)
-        } catch (badRequestException: BadRequestException) {
-            return ResponseEntity.badRequest().body(mapOf("error" to badRequestException.message))
-        }
-        catch (exception: Exception) {
-            return ResponseEntity.badRequest().body(mapOf("error" to exception.message))
-        }
+            val encodedPassword = passwordEncoder.encode(userRequest.password)
+            val savedUser = userService.create(userRequest.name, userRequest.email, encodedPassword)
+            return  ResponseEntity.accepted().build()
     }
 
     @GetMapping

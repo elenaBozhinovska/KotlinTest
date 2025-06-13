@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(private val userRepository: UserRepository): IUserService {
 
-    override fun create(name: String, email: String): User {
+    override fun create(name: String, email: String, encodedPassword: String): User {
         val emailExists = userRepository.existsByEmail(email)
 
         if(emailExists) {
             throw BadRequest("""Duplicate e-mail: $email""")
         }
 
-        val user = User(name = name, email = email)
+        val user = User(name = name, email = email, password = encodedPassword)
         return userRepository.save(user)
     }
 

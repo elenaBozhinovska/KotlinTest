@@ -17,4 +17,9 @@ class ValidationExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("errors" to errors))
     }
+
+    @ExceptionHandler(BadRequest::class)
+    fun handleValidationExceptions(ex: BadRequest): ResponseEntity<Any> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("errors" to ex.message))
+    }
 }
