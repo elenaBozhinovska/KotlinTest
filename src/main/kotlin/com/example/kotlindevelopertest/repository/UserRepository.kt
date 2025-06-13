@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
-    fun findByEmail(email: String): User?
     fun existsByEmail(email: String): Boolean
     fun findByNameStartingWithIgnoreCase(query: String, pageable: Pageable): Page<User>
 }

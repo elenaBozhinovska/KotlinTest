@@ -24,4 +24,9 @@ class UserService(private val userRepository: UserRepository): IUserService {
 
     fun searchUsersByName(query: String, pageable: Pageable): Page<User> {
         return userRepository.findByNameStartingWithIgnoreCase(query, pageable)
-    }}
+    }
+
+    fun count() = userRepository.count()
+
+
+}

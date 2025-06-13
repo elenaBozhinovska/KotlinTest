@@ -36,11 +36,10 @@ class UserController(private val userService: UserService ) {
         @RequestParam query: String,
         @RequestParam limit: Int
     ): UsersSearchResult {
-
         val pageable = PageRequest.of(0, limit)
         val users = userService.searchUsersByName(query, pageable)
         val userResponses = users.map { UserResponse(it.email, it.name) }.toList()
-        return UsersSearchResult(users = userResponses, total = users.totalElements)
+        return UsersSearchResult(users = userResponses, total = userService.count())
     }
 
 
