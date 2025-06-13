@@ -1,8 +1,8 @@
 package com.example.kotlindevelopertest.api
 import com.example.kotlindevelopertest.model.User
+import com.example.kotlindevelopertest.requests.UserRequest
 import com.example.kotlindevelopertest.service.interfaces.IUserService
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -28,27 +29,36 @@ class UserControllerIntegrationTest {
     @Autowired
     lateinit var userService: IUserService
 
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+
     @Configuration
     class TestConfig {
         @Bean
         fun userService(): IUserService {
             return mock(IUserService::class.java)
         }
+
+        @Bean
+        fun passwordEncoder(): PasswordEncoder {
+            return mock(PasswordEncoder::class.java)
+        }
     }
 
     @Test
-    fun `createUser should return 200 OK and user data`() {
-        val user = User(name = "Alice", email = "alice@example.com")
-        `when`(userService.create("Alice", "alice@example.com")).thenReturn(user)
+    fun `createUser should return 202 Accepted`() {
+        val encodedPassword = "encodedPassword123"
+        `when`(passwordEncoder.encode("password123")).thenReturn(encodedPassword)
+        val user = UserRequest(name = "Alice", email = "alice@example.com", password = "password123")
+        `when`(userService.create(name = "Alice", email = "alice@example.com", encodedPassword = encodedPassword))
+            .thenReturn(User(name = user.name, password = user.password, email = user.email))
 
         mockMvc.perform(
             post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user))
         )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.name", `is`("Alice")))
-            .andExpect(jsonPath("$.email", `is`("alice@example.com")))
+            .andExpect(status().isAccepted)
     }
 
 }
