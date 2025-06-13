@@ -1,4 +1,6 @@
-package com.example.kotlindevelopertest.api
+package com.example.kotlindevelopertest
+
+import com.example.kotlindevelopertest.api.UserController
 import com.example.kotlindevelopertest.model.User
 import com.example.kotlindevelopertest.requests.UserRequest
 import com.example.kotlindevelopertest.service.interfaces.IUserService
