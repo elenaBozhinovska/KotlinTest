@@ -31,6 +31,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
 kotlin {
@@ -47,4 +48,7 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs = listOf(
+        "-javaagent:${classpath.find { it.name.contains("byte-buddy-agent") }!!.absolutePath}"
+    )
 }

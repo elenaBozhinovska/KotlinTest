@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(private val userRepository: UserRepository): IUserService {
 
-    fun create(name: String, email: String): User {
+    override fun create(name: String, email: String): User {
         val emailExists = userRepository.existsByEmail(email)
 
         if(emailExists) {
@@ -22,11 +22,10 @@ class UserService(private val userRepository: UserRepository): IUserService {
         return userRepository.save(user)
     }
 
-    fun searchUsersByName(query: String, pageable: Pageable): Page<User> {
+    override fun searchUsersByName(query: String, pageable: Pageable): Page<User> {
         return userRepository.findByNameStartingWithIgnoreCase(query, pageable)
     }
 
-    fun count() = userRepository.count()
-
+    override fun count() = userRepository.count()
 
 }

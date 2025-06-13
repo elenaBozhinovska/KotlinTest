@@ -3,7 +3,7 @@ package com.example.kotlindevelopertest.api
 import com.example.kotlindevelopertest.model.User
 import com.example.kotlindevelopertest.responses.UserResponse
 import com.example.kotlindevelopertest.responses.UsersSearchResult
-import com.example.kotlindevelopertest.service.implementation.UserService
+import com.example.kotlindevelopertest.service.interfaces.IUserService
 import org.apache.coyote.BadRequestException
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val userService: UserService ) {
+class UserController(private val userService: IUserService) {
 
     @PostMapping
     fun createUser(@RequestBody user: User): ResponseEntity<Any> {
@@ -41,6 +41,5 @@ class UserController(private val userService: UserService ) {
         val userResponses = users.map { UserResponse(it.email, it.name) }.toList()
         return UsersSearchResult(users = userResponses, total = userService.count())
     }
-
 
 }
