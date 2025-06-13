@@ -1,9 +1,10 @@
 package com.example.kotlindevelopertest.api
 
-import com.example.kotlindevelopertest.model.User
+import com.example.kotlindevelopertest.requests.UserRequest
 import com.example.kotlindevelopertest.responses.UserResponse
 import com.example.kotlindevelopertest.responses.UsersSearchResult
 import com.example.kotlindevelopertest.service.interfaces.IUserService
+import jakarta.validation.Valid
 import org.apache.coyote.BadRequestException
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(private val userService: IUserService) {
 
     @PostMapping
-    fun createUser(@RequestBody user: User): ResponseEntity<Any> {
+    fun createUser(@RequestBody @Valid userRequest: UserRequest): ResponseEntity<Any> {
         try {
-            val savedUser = userService.create(user.name, user.email)
+            val savedUser = userService.create(userRequest.name, userRequest.email)
             return ResponseEntity.ok(savedUser)
         } catch (badRequestException: BadRequestException) {
             return ResponseEntity.badRequest().body(mapOf("error" to badRequestException.message))
